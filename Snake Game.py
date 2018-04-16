@@ -197,10 +197,10 @@ def run_game_with_ML(model):
     test_games = 300
     steps_per_game = 300
     
-    for _ in tqdm(range(steps_per_game)):
+    for _ in tqdm(range(test_games)):
         snake_start, snake_position, apple_position, score = starting_positions()
 
-        for _ in range(500):
+        for _ in range(steps_per_game):
             is_front_blocked, is_left_blocked ,is_right_blocked = blocked_directions(snake_position)
             angle = angle_with_apple(snake_position, apple_position)
             predictions = []
