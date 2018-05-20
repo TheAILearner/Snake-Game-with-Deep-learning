@@ -226,7 +226,7 @@ def run_game_with_ML(model):
                 max_score = score
         avg_score += score
             
-    return max_score, avg_score/500
+    return max_score, avg_score/300
 
 def train_model():
     network = input_data(shape=[None, 5, 1], name='input')
