@@ -85,7 +85,7 @@ def is_direction_blocked(snake_position, current_direction_vector):
     else:
         return 0
 
-def generate_random_direction(snake_position, angle_with_apple):
+def generate_snake_direction(snake_position, angle_with_apple):
     direction = 0
     
     if angle_with_apple > 0:
@@ -170,7 +170,7 @@ def generate_training_data():
         
         for _ in range(steps_per_game):
             angle = angle_with_apple(snake_position, apple_position)
-            direction, button_direction = generate_random_direction(snake_position, angle)
+            direction, button_direction = generate_snake_direction(snake_position, angle)
             snake_position, apple_position, score = play_game(snake_start, snake_position, apple_position, button_direction, score)
             is_front_blocked, is_left_blocked ,is_right_blocked = blocked_directions(snake_position)
             
