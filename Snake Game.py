@@ -12,13 +12,14 @@ def display_snake(snake_position):
     for position in snake_position:
         pygame.draw.rect(display,red,pygame.Rect(position[0],position[1],10,10))
 
-def display_apple(apple_position):
-    pygame.draw.rect(display,green,pygame.Rect(apple_position[0], apple_position[1],10,10))
+def display_apple(apple_position,apple):
+    display.blit(apple,(apple_position[0], apple_position[1]))
+#     pygame.draw.rect(display,green,pygame.Rect(apple_position[0], apple_position[1],10,10))
 
 def starting_positions():
     snake_start = [100,100]
     snake_position = [[100,100],[90,100],[80,100]]
-    apple_position = [random.randrange(1,20)*10,random.randrange(1,20)*10]
+    apple_position = [random.randrange(1,50)*10,random.randrange(1,50)*10]
     score = 3
     
     return snake_start, snake_position, apple_position, score
@@ -53,7 +54,7 @@ def collision_with_apple(apple_position, score):
     return apple_position, score
 
 def collision_with_boundaries(snake_start):
-    if snake_start[0]>=200 or snake_start[0]<0 or snake_start[1]>=200 or snake_start[1]<0 :
+    if snake_start[0]>=500 or snake_start[0]<0 or snake_start[1]>=500 or snake_start[1]<0 :
         return 1
     else:
         return 0
@@ -138,15 +139,15 @@ def angle_with_apple(snake_position, apple_position):
     angle = math.atan2(apple_direction_vector_normalized[1] * snake_direction_vector_normalized[0] - apple_direction_vector_normalized[0] * snake_direction_vector_normalized[1], apple_direction_vector_normalized[1] * snake_direction_vector_normalized[1] + apple_direction_vector_normalized[0] * snake_direction_vector_normalized[0]) / math.pi
     return angle
 
-def play_game(snake_start, snake_position, apple_position, button_direction, score):
+def play_game(snake_start, snake_position, apple_position, button_direction, score,apple):
     crashed = False
     while crashed is not True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 crashed = True
-        display.fill(white)
+        display.fill(background)
     
-        display_apple(apple_position)
+        display_apple(apple_position,apple)
         display_snake(snake_position)
     
         snake_position, apple_position, score = generate_snake(snake_start, snake_position, apple_position, button_direction, score)
@@ -171,7 +172,7 @@ def generate_training_data():
         for _ in range(steps_per_game):
             angle = angle_with_apple(snake_position, apple_position)
             direction, button_direction = generate_next_direction(snake_position, angle)
-            snake_position, apple_position, score = play_game(snake_start, snake_position, apple_position, button_direction, score)
+            snake_position, apple_position, score = play_game(snake_start, snake_position, apple_position, button_direction, score,apple_image)
             is_front_blocked, is_left_blocked ,is_right_blocked = blocked_directions(snake_position)
             
             training_data_x.append([is_left_blocked,is_front_blocked, is_right_blocked, angle, direction])
@@ -217,7 +218,7 @@ def run_game_with_ML(model):
             
             button_direction = generate_button_direction(new_direction)
 
-            snake_position, apple_position, score = play_game(snake_start, snake_position, apple_position, button_direction, score)  
+            snake_position, apple_position, score = play_game(snake_start, snake_position, apple_position, button_direction, score, apple_image)  
             if collision_with_boundaries(snake_position[0]) == 1 or collision_with_self(snake_position) == 1:
                 avg_score += score
                 break
@@ -238,15 +239,16 @@ def train_model():
     
     return model
 
-display_width = 200
-display_height = 200
+display_width = 500
+display_height = 500
 green = (0,255,0)
 red = (255,0,0)
 black = (0,0,0)
-white = (255,255,255)
-
+background = (0,255,0)
+apple_image = pygame.image.load('apple.jpg')
 pygame.init()
 display=pygame.display.set_mode((display_width,display_height))
+# pygame.display.set_caption("SCORE")
 clock=pygame.time.Clock()
 
 '''
@@ -265,4 +267,3 @@ print(avg_score)
 
                                          
 pygame.quit()
-quit()
